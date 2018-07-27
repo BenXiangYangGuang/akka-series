@@ -62,9 +62,7 @@ public class MyAkkaClusterServer extends UntypedActor {
             getSender().tell(new TransformationMessages.TransformationResult(job.getText().toUpperCase()), getSelf());
 
         } else if (message instanceof ClusterEvent.CurrentClusterState) {
-            /**
-             * 当前节点在刚刚加入集群时，会收到CurrentClusterState消息，从中可以解析出集群中的所有前端节点（即roles为frontend的），并向其发送BACKEND_REGISTRATION消息，用于注册自己
-             */
+
             ClusterEvent.CurrentClusterState state = (ClusterEvent.CurrentClusterState) message;
             for (Member member : state.getMembers()) {
                 if (member.status().equals(MemberStatus.up())) {
@@ -73,9 +71,7 @@ public class MyAkkaClusterServer extends UntypedActor {
             }
 
         } else if (message instanceof ClusterEvent.MemberUp) {
-            /**
-             * 有新的节点加入
-             */
+
             ClusterEvent.MemberUp mUp = (ClusterEvent.MemberUp) message;
             register(mUp.member());
 
@@ -85,10 +81,6 @@ public class MyAkkaClusterServer extends UntypedActor {
 
     }
 
-    /**
-     * 如果是客户端角色，则像客户端注册自己的信息。客户端收到消息以后会讲这个服务端存到本机服务列表中
-     * @param member
-     */
     void register(Member member) {
         if (member.hasRole("client"))
             getContext().actorSelection(member.address() + "/user/myAkkaClusterClient").tell(BACKEND_REGISTRATION, getSelf());

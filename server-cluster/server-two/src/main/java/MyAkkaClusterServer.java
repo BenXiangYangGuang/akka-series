@@ -29,6 +29,13 @@ import com.wewe.TransformationMessages;
  *      每一个客户端保存了所有服务器段的信息;由每一个客户端来维护服务器端信息.
  *      每一个服务器端向客户端注册自己.
  *
+ *      seed-nodes = [
+            "akka.tcp://akkaClusterTest@127.0.0.1:2551",
+            "akka.tcp://akkaClusterTest@127.0.0.1:2553"
+            ]
+        集群中的节点不一定都在种子节点中.
+]
+ *
  * @Refer To: https://blog.csdn.net/beliefer/article/details/53893929
  * https://blog.csdn.net/liubenlong007/article/details/54603296
  */
@@ -63,7 +70,7 @@ public class MyAkkaClusterServer extends UntypedActor {
             /**
              * 当前节点在刚刚加入集群时，会收到CurrentClusterState消息，从中可以解析出集群中的所有前端节点（即roles为frontend的），并向其发送BACKEND_REGISTRATION消息，用于注册自己
              *
-             * 会检测到所有节点(前端和服务器端);功能是用来检测新增的服务器端节点;
+             * 只针对服务器端节点增加的功能.功能为 检测服务器端节点增加.服务器端向所有客户端注册自己信息
              */
             ClusterEvent.CurrentClusterState state = (ClusterEvent.CurrentClusterState) message;
             for (Member member : state.getMembers()) {
