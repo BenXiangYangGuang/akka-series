@@ -62,6 +62,8 @@ public class MyAkkaClusterServer extends UntypedActor {
         } else if (message instanceof ClusterEvent.CurrentClusterState) {
             /**
              * 当前节点在刚刚加入集群时，会收到CurrentClusterState消息，从中可以解析出集群中的所有前端节点（即roles为frontend的），并向其发送BACKEND_REGISTRATION消息，用于注册自己
+             *
+             * 会检测到所有节点(前端和服务器端);功能是用来检测新增的服务器端节点;
              */
             ClusterEvent.CurrentClusterState state = (ClusterEvent.CurrentClusterState) message;
             for (Member member : state.getMembers()) {
@@ -72,7 +74,7 @@ public class MyAkkaClusterServer extends UntypedActor {
 
         } else if (message instanceof ClusterEvent.MemberUp) {
             /**
-             * 有新的节点加入
+             * 新的节点成员加入;触发事件.不论是前端节点,还是后端节点
              */
             ClusterEvent.MemberUp mUp = (ClusterEvent.MemberUp) message;
             register(mUp.member());
