@@ -33,7 +33,7 @@ object ReactiveTweetsExample {
     implicit val system = ActorSystem("reactive-tweets")
     //ActorMaterializer 这个参数是可以配置的
     /**
-      * Source[Out,M1] Flow[In,Out,M2] Sink[In,M3];其中 M1 M2 M3 和数据处理没有关系;只和materialized types 物化类型有关系
+      * Source[Out,M1] Flow[In,Out,M2] Sink[In,M3];其中 M1 M2 M3 和数据处理没有关系;只和materialized types 物化类型有关系; Mat是运算结果类型
       *
       */
     implicit val materializer = ActorMaterializer()

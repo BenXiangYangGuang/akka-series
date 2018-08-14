@@ -12,6 +12,7 @@
         <module>server-cluster</module>
         <module>client-cluster</module>
         <module>alpakkaLearning</module>
+        <module>datasend</module>
     </modules>
 
     <dependencies>

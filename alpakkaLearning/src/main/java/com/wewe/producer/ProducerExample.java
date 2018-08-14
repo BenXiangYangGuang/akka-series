@@ -22,7 +22,7 @@ import java.util.concurrent.CompletionStage;
 /**
  * @Author: fei2
  * @Date: 18-7-10 上午11:15
- * @Description: alpakka-kafka-connector
+ * @Description: alpakka-kafka-connector quick-start
  * @Refer To:
  */
 
