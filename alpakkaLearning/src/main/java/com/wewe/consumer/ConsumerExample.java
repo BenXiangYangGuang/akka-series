@@ -91,7 +91,7 @@ abstract class ConsumerExample {
     final ConsumerSettings<String, byte[]> consumerSettings =
             ConsumerSettings.create(config, new StringDeserializer(), new ByteArrayDeserializer())
                     .withBootstrapServers("localhost:9092")
-                    .withGroupId("group1")
+                    .withGroupId("group2")
                     .withProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
     // #settings
 
@@ -189,6 +189,7 @@ class AtMostOnceExample extends ConsumerExample {
 
     public void demo() {
         //atMostOnceSource commits the offset for each message and that is rather slow, batching of commits is recommended.
+        //他会管理自动提交也不是  由 ENABLE_AUTO_COMMIT_CONFIG 这个配置来控制提交的;他也支持批处理提交
         //每次提交信息比较慢,建议使用批处理提交
         // #atMostOnce
         Consumer.Control control =
@@ -231,7 +232,7 @@ class AtLeastOnceExample extends ConsumerExample {
                         .mapAsync(1, msg ->
                                 business(msg.record().key(), msg.record().value())
                                         .thenApply(done -> msg.committableOffset()))
-                        .mapAsync(1, offset -> offset.commitJavadsl())
+                        .mapAsync(1, offset -> offset.commitJavadsl())  //提交offset 动作
                         .to(Sink.ignore())
                         .run(materializer);
         // #atLeastOnce
@@ -285,7 +286,11 @@ class ConsumerToProducerSinkExample extends ConsumerExample {
   }
 
   public void demo() {
-    // #consumerToProducerSink
+      // #consumerToProducerSink
+      // 重点在于一个commitableSink,创建了一个背压式的 sink; 发送数据使用 "at least once" 语义
+      // 在第一个map之前做数据的操作,而后创建sink 进行数据的发送
+      // 接受两个topic的数据,是交替行的.
+      // +PassThrough 转移量 就是一个ConsumerMessage.Committable,记录Consumer offset位置,为了后续操作方便;
     Consumer.Control control =
         Consumer.committableSource(consumerSettings, Subscriptions.topics("topic1", "topic2"))
           .map(msg ->
@@ -340,7 +345,8 @@ class ConsumerToProducerWithBatchCommitsExample extends ConsumerExample {
   }
 
   public void demo() {
-    // #consumerToProducerFlowBatch
+    // consumerToProducerFlowBatch 进行批量提交
+      // Consumer.Control 相当于 Materialized value of the consumer `Source`
     Source<ConsumerMessage.CommittableOffset, Consumer.Control> source =
       Consumer.committableSource(consumerSettings, Subscriptions.topics("topic1"))
       .map(msg -> {
@@ -366,7 +372,7 @@ class ConsumerToProducerWithBatchCommitsExample extends ConsumerExample {
   }
 }
 
-// Connect a Consumer to Producer, and commit in batches
+// Connect a Consumer to Producer, and commit in batches // #groupedWithin
 class ConsumerToProducerWithBatchCommits2Example extends ConsumerExample {
   public static void main(String[] args) {
     new ConsumerToProducerWithBatchCommits2Example().demo();
@@ -396,6 +402,9 @@ class ConsumerToProducerWithBatchCommits2Example extends ConsumerExample {
   }
 }
 
+//一个数据源一个分区;committablePartitionedSource 支持自动分配kafka的topic-partition
+//topic-partition 取消之后,相应的source完成.
+//每个分区是被压式的
 // Backpressure per partition with batch commit
 class ConsumerWithPerPartitionBackpressure extends ConsumerExample {
   public static void main(String[] args) {
@@ -403,12 +412,13 @@ class ConsumerWithPerPartitionBackpressure extends ConsumerExample {
   }
 
   public void demo() {
+      //线程池
     final Executor ec = Executors.newCachedThreadPool();
     // #committablePartitionedSource
     Consumer.DrainingControl<Done> control =
         Consumer
             .committablePartitionedSource(consumerSettings, Subscriptions.topics("topic1"))
-            .flatMapMerge(maxPartitions, Pair::second)
+            .flatMapMerge(maxPartitions, Pair::second)  //数据流并行maxPartitions份,最终合并到一份.处理后的数据是无须的.Pair::second 指的是上一步完成结果的第二个参数
             .via(business())
             .map(msg -> msg.committableOffset())
             .batch(
@@ -418,7 +428,7 @@ class ConsumerWithPerPartitionBackpressure extends ConsumerExample {
             )
             .mapAsync(3, offsets -> offsets.commitJavadsl())
             .toMat(Sink.ignore(), Keep.both())
-            .mapMaterializedValue(Consumer::createDrainingControl)
+            .mapMaterializedValue(Consumer::createDrainingControl)  //创建Consumer.DrainingControl<Done> control
             .run(materializer);
     // #committablePartitionedSource
     control.drainAndShutdown(ec);
@@ -560,7 +570,7 @@ class ConsumerMetricsExample extends ConsumerExample {
     // #consumerMetrics
     // run the stream to obtain the materialized Control value
     Consumer.Control control = Consumer
-        .plainSource(consumerSettings, Subscriptions.assignment(new TopicPartition("topic1", 2)))
+        .plainSource(consumerSettings, Subscriptions.assignment(new TopicPartition("topic1", 0)))
         .via(business())
         .to(Sink.ignore())
         .run(materializer);
@@ -621,6 +631,14 @@ class ShutdownPlainSourceExample extends ConsumerExample {
 
 }
 
+
+/**
+ * Consumer.DrainingControl  drainAndShutdown 停止流程
+ * 1.Consumer.Control.stop() to stop producing messages from the Source. This does not stop the underlying Kafka Consumer
+ * 2.Wait for the stream to complete,
+ * so that a commit request has been made for all offsets of all processed messages (via commitScaladsl() or commitJavadsl()).
+ * 3.Consumer.Control.shutdown() to wait for all outstanding commit requests to finish and stop the Kafka Consumer.
+ */
 // Shutdown when batching commits
 class ShutdownCommittableSourceExample extends ConsumerExample {
   public static void main(String[] args) {

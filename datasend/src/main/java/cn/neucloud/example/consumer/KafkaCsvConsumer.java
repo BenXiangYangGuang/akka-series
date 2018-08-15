@@ -22,7 +22,7 @@ public class KafkaCsvConsumer implements CommandLineRunner{
     
     private KafkaConsumer<Integer,String> consumer;
 //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Suct_Data";
+    private static String topic = "Suct_Data_Redirct";
     /**
      * 项目启动自动执行方法
      * @param strings
