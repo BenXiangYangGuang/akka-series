@@ -74,6 +74,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * 如果rebalance之前没有提交offset，那么消费者就有可能从上一次提交offset的位置开始消费
  * <p>
  * # onPartitionsAssigned: 在rebalance之后，消费者拉取数据之前调用，我们可以在此方法中调整或者定义offset的值
+ *
+ * 至少一次提交存在下游数据处理存在乱序;offset提交错误问题;因而进行数据的提前接受分流;不同处理的不同produce接受;
+ * 从而保证每一个produce存储的数据是有序的.
+ *
  */
 abstract class ConsumerExample {
     protected final ActorSystem system = ActorSystem.create("example");
