@@ -22,7 +22,7 @@ public class KafkaCsvConsumer implements CommandLineRunner{
     
     private KafkaConsumer<Integer,String> consumer;
 //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Suct_Data_Redirct";
+    private static String topic = "Itdeer_Form_Data";
     /**
      * 项目启动自动执行方法
      * @param strings
@@ -31,12 +31,12 @@ public class KafkaCsvConsumer implements CommandLineRunner{
     @Override
     public void run(String... strings) throws Exception {
        
-        new Thread(){
+     /*   new Thread(){
             @Override
             public void run() {
                 colletData();
             }
-        }.start();
+        }.start();*/
         
     }
     public void colletData(){

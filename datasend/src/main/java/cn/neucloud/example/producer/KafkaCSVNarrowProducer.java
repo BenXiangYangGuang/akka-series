@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @Author: fei2
@@ -15,27 +18,19 @@ import java.util.*;
  */
 @Slf4j
 @Component
-public class KafkaCSVProducer implements CommandLineRunner {
+public class KafkaCSVNarrowProducer implements CommandLineRunner {
 
     //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Itdeer_Form_Data";
+    private static String topic = "Itdeer_Form_Data_Narrow";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
-        String value = new Date().getTime() + "," + getRandomValue() + "," + getRandomValue() + "," + getRandomValue();
-        KafkaProducerUtil.sendToKafka(topic,value);
-        log.info("send {} to topic :{}" ,value,topic);
-
-    }
-/*    public static void main(String[] args) {
-        int key = 1;
-        while (true){
-            Random random = new Random();
-            String value = random.nextInt(100)+","+random.nextInt(100)+","+random.nextInt(100)+"";
+        for (int i = 1; i < 4; i++){
+            String value = new Date().getTime() + ",col" + i + "," + getRandomValue() ;
             KafkaProducerUtil.sendToKafka(topic,value);
-            key++;
+            log.info("send {} to topic :{}" ,value,topic);
         }
-    }*/
+    }
 
     /**
      * 项目启动自动 执行的方法

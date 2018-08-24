@@ -5,7 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * @Author: fei2
@@ -15,14 +18,15 @@ import java.util.*;
  */
 @Slf4j
 @Component
-public class KafkaCSVProducer implements CommandLineRunner {
+public class KafkaJSONProducer implements CommandLineRunner {
 
     //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Itdeer_Form_Data";
+    private static String topic = "Itdeer_Form_Data_JSON";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
-        String value = new Date().getTime() + "," + getRandomValue() + "," + getRandomValue() + "," + getRandomValue();
+        long date = new Date().getTime();
+        String value = "{\"t1\": "+date+",\"col1\": "+getRandomValue()+",\"col2\": "+getRandomValue()+",\"col3\": "+getRandomValue()+"}";
         KafkaProducerUtil.sendToKafka(topic,value);
         log.info("send {} to topic :{}" ,value,topic);
 

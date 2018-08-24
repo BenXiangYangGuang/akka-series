@@ -27,7 +27,7 @@ object FetchHttpEvery30SecondsAndConvertCsvToJsonToKafka
 
   val httpRequest = HttpRequest(uri = "https://www.nasdaq.com/screening/companies-by-name.aspx?exchange=NASDAQ&render=download")
     .withHeaders(Accept(MediaRanges.`text/*`))
-
+  //抽取请求中的数据
   def extractEntityData(response: HttpResponse) :Source[ByteString, _] =
     response match {
 
@@ -35,7 +35,7 @@ object FetchHttpEvery30SecondsAndConvertCsvToJsonToKafka
       case notOkResponse =>
         Source.failed(new  RuntimeException(s"illegal response $notOkResponse"))
   }
-
+  //非null判断，然后执行非null 的byteString => String
   def cleanseCsvData(csvData:Map[String,ByteString]):Map[String, String] =
     csvData
       .filterNot { case (key, _) => key.isEmpty }

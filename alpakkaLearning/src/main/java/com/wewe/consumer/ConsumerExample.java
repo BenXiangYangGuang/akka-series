@@ -193,7 +193,7 @@ class AtMostOnceExample extends ConsumerExample {
 
     public void demo() {
         //atMostOnceSource commits the offset for each message and that is rather slow, batching of commits is recommended.
-        //他会管理自动提交也不是  由 ENABLE_AUTO_COMMIT_CONFIG 这个配置来控制提交的;他也支持批处理提交
+        //他会每次提价offset,尽管配置了 ENABLE_AUTO_COMMIT_CONFIG,次配置无效.他也支持批处理提交(文档支持但找不到对应的方法)
         //每次提交信息比较慢,建议使用批处理提交
         // #atMostOnce
         Consumer.Control control =
@@ -201,7 +201,8 @@ class AtMostOnceExample extends ConsumerExample {
                         .atMostOnceSource(consumerSettings, Subscriptions.topics("topic1"))
                         //并行度为10,并不影响数据的处理顺序,还是按照原来的数据顺序进行计算后的数据返回
                         .mapAsync(10, record -> business(record.key(), record.value()))
-                        .to(Sink.foreach(it -> System.out.println("Done with " + it)))
+                        .to(Sink.foreach(it ->
+                                System.out.println("Done with " + it)))
                         .run(materializer);
 
         // #atMostOnce
@@ -637,7 +638,7 @@ class ShutdownPlainSourceExample extends ConsumerExample {
 
 
 /**
- * Consumer.DrainingControl  drainAndShutdown 停止流程
+ * 使用外部offset时,使用Consumer.DrainingControl  drainAndShutdown 停止流程;
  * 1.Consumer.Control.stop() to stop producing messages from the Source. This does not stop the underlying Kafka Consumer
  * 2.Wait for the stream to complete,
  * so that a commit request has been made for all offsets of all processed messages (via commitScaladsl() or commitJavadsl()).
