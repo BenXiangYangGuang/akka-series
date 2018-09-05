@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,15 +18,15 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
+public class KafkaCSVWidthToNarrowProducer implements CommandLineRunner {
 
     //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "csv_narrow_width";
+    private static String topic = "csv_width_to_narrow";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
         for (int i = 1; i < 4; i++){
-            String value = System.currentTimeMillis() + ",col" + i + "," + getRandomValue() ;
+            String value = System.currentTimeMillis() + "," + getRandomValue() + "," + getRandomValue() + "," + getRandomValue();
             KafkaProducerUtil.sendToKafka(topic,value);
             log.info("send {} to topic :{}" ,value,topic);
         }
