@@ -18,7 +18,6 @@ import java.util.TimerTask;
 @Component
 public class KafkaJSONNarrowToWidthProducer implements CommandLineRunner {
 
-    //    private static String topic = "topic_zYy5r8J0";
     private static String topic = "json_narrow_to_width";
     private static long time = 3000;
     int v = 1 ;

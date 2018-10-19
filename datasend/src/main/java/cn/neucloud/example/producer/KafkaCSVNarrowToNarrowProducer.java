@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,9 +16,9 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
+public class KafkaCSVNarrowToNarrowProducer implements CommandLineRunner {
 
-    private static String topic = "csv_narrow_width";
+    private static String topic = "csv_narrow_to_narrow";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){

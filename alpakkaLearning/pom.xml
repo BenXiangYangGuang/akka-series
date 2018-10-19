@@ -25,9 +25,6 @@
             </plugin>
         </plugins>
     </build>
-    <modules>
-        <module>../akkaStreamLearning</module>
-    </modules>
     <dependencies>
         <dependency>
             <groupId>com.typesafe.akka</groupId>

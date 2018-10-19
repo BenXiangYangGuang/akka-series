@@ -17,8 +17,7 @@ import java.util.*;
 @Component
 public class KafkaCSVProducer implements CommandLineRunner {
 
-    //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Itdeer_Form_Data";
+    private static String topic = "csv_alarm";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){

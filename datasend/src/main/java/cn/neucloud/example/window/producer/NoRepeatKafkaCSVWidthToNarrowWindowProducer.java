@@ -1,11 +1,10 @@
-package cn.neucloud.example.producer;
+package cn.neucloud.example.window.producer;
 
 import cn.neucloud.example.utils.KafkaProducerUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,16 +16,24 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
+public class NoRepeatKafkaCSVWidthToNarrowWindowProducer implements CommandLineRunner {
 
-    private static String topic = "csv_narrow_width";
+    private static String topic = "window_remove_repeat";
     private static long time = 3000;
-    int v = 1 ;
+    static int v = 1 ;
+
     public void sendCsvData(){
-        for (int i = 1; i < 4; i++){
-            String value = System.currentTimeMillis() + ",col" + i + "," + getRandomValue() ;
-            KafkaProducerUtil.sendToKafka(topic,value);
-            log.info("send {} to topic :{}" ,value,topic);
+
+        while (true){
+            try {
+                Thread.sleep(50);
+                String value = System.currentTimeMillis() + ","+ v + "";
+                KafkaProducerUtil.sendToKafka(topic, value);
+                v ++;
+                log.info("send {} to topic :{}" ,value,topic);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -38,7 +45,7 @@ public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
      */
     @Override
     public void run(String... strings) throws Exception {
-        long timeRandom = (long) (Math.random() * 3);
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -48,8 +55,4 @@ public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
         }, 0, time);
 
     }
-    private static int getRandomValue(){
-        return (int)(Math.random() * 1000);
-    }
-    
 }

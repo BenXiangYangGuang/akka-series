@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,14 +16,14 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
+public class KafkaCSVWidthToWidthProducer implements CommandLineRunner {
 
-    private static String topic = "csv_narrow_width";
+    private static String topic = "csv_width_to_width";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
         for (int i = 1; i < 4; i++){
-            String value = System.currentTimeMillis() + ",col" + i + "," + getRandomValue() ;
+            String value = System.currentTimeMillis() + "," + getRandomValue() + "," + getRandomValue() + "," + getRandomValue();
             KafkaProducerUtil.sendToKafka(topic,value);
             log.info("send {} to topic :{}" ,value,topic);
         }
@@ -38,7 +37,7 @@ public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
      */
     @Override
     public void run(String... strings) throws Exception {
-        long timeRandom = (long) (Math.random() * 3);
+
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

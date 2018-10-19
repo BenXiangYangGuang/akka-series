@@ -116,8 +116,11 @@ abstract class ConsumerExample {
 // Consume messages and store a representation, including offset, in OffsetStorage
 
 /**
+ *一：
+ * Offset Storage external to Kafka
+ *
  * Consumer.plainSource  and Consumer.plainPartitionedManualOffsetSource
- * 不支持提交offset 到kafka;可以由一下两种方式保存offset
+ * 不支持代码维护提交offset 到kafka;可以由一下两种方式保存offset
  * 1.保存offset;到外部系统;数据库自己维护
  * 2.设置自动提交;不是由这个方法来来管理offset;有consumer配置的而是自动提交offset 到 kafka内部;
  * 配置:
@@ -126,6 +129,10 @@ abstract class ConsumerExample {
  * consumerSettings
  * .withProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true")
  * .withProperty(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "5000");
+ *二：
+ *  Offset Storage in Kafka - committing
+ *  支持代码控制提交offset
+ *
  */
 class ExternalOffsetStorageExample extends ConsumerExample {
     public static void main(String[] args) {

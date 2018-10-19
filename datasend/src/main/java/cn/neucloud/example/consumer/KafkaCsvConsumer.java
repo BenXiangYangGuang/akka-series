@@ -30,14 +30,14 @@ public class KafkaCsvConsumer implements CommandLineRunner{
      */
     @Override
     public void run(String... strings) throws Exception {
-       
+
      /*   new Thread(){
             @Override
             public void run() {
                 colletData();
             }
         }.start();*/
-        
+
     }
     public void colletData(){
         consumer = KafkaConsumerUtil.getConsumer();
@@ -49,5 +49,5 @@ public class KafkaCsvConsumer implements CommandLineRunner{
             }
         }
     }
-    
+
 }

@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,37 +16,23 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaJSONProducer implements CommandLineRunner {
-
-    private static String topic = "Itdeer_Form_Data_JSON";
+public class KafkaJSONWidthToWidthProducer implements CommandLineRunner{
+    private static String topic = "json_width_to_width";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
-        long date = new Date().getTime();
+        long date = System.currentTimeMillis();
         String value = "{\"t1\": "+date+",\"col1\": "+getRandomValue()+",\"col2\": "+getRandomValue()+",\"col3\": "+getRandomValue()+"}";
         KafkaProducerUtil.sendToKafka(topic,value);
         log.info("send {} to topic :{}" ,value,topic);
 
     }
-/*    public static void main(String[] args) {
-        int key = 1;
-        while (true){
-            Random random = new Random();
-            String value = random.nextInt(100)+","+random.nextInt(100)+","+random.nextInt(100)+"";
-            KafkaProducerUtil.sendToKafka(topic,value);
-            key++;
-        }
-    }*/
+    private int getRandomValue(){
+        return (int)(Math.random() * 1000);
+    }
 
-    /**
-     * 项目启动自动 执行的方法
-     *
-     * @param strings
-     * @throws Exception
-     */
     @Override
-    public void run(String... strings) throws Exception {
-
+    public void run(String... strings){
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -56,10 +40,5 @@ public class KafkaJSONProducer implements CommandLineRunner {
                 sendCsvData();
             }
         }, 0, time);
-
     }
-    private static int getRandomValue(){
-        return (int)(Math.random() * 1000);
-    }
-    
 }

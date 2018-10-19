@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,28 +16,30 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
+public class KafkaJSONNarrowToNarrowProducer implements CommandLineRunner {
 
-    private static String topic = "csv_narrow_width";
+    private static String topic = "json_narrow_to_narrow";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
-        for (int i = 1; i < 4; i++){
-            String value = System.currentTimeMillis() + ",col" + i + "," + getRandomValue() ;
+        long date = System.currentTimeMillis();
+
+        for (int i = 1; i < 5; i++){
+
+            String value = "{\"t1\": "+date+",\"key\":\"col"+i+"\",\"value\": "+getRandomValue()+"}";
+
             KafkaProducerUtil.sendToKafka(topic,value);
             log.info("send {} to topic :{}" ,value,topic);
         }
+
     }
 
-    /**
-     * 项目启动自动 执行的方法
-     *
-     * @param strings
-     * @throws Exception
-     */
+    private int getRandomValue(){
+        return (int)(Math.random() * 1000);
+    }
+
     @Override
     public void run(String... strings) throws Exception {
-        long timeRandom = (long) (Math.random() * 3);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -46,10 +47,5 @@ public class KafkaCSVNarrowToWidthProducer implements CommandLineRunner {
                 sendCsvData();
             }
         }, 0, time);
-
     }
-    private static int getRandomValue(){
-        return (int)(Math.random() * 1000);
-    }
-    
 }

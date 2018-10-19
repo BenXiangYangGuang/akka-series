@@ -1,12 +1,11 @@
-package cn.neucloud.example.producer;
+package cn.neucloud.example.window.producer;
 
 import cn.neucloud.example.utils.KafkaProducerUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,9 +17,9 @@ import java.util.TimerTask;
  */
 @Slf4j
 @Component
-public class KafkaCSVWidthToNarrowProducer implements CommandLineRunner {
+public class KafkaCSVWidthToNarrowWindowProducer implements CommandLineRunner {
 
-    private static String topic = "csv_width_to_narrow";
+    private static String topic = "csv_window_width_to_narrow";
     private static long time = 3000;
     int v = 1 ;
     public void sendCsvData(){
@@ -30,6 +29,26 @@ public class KafkaCSVWidthToNarrowProducer implements CommandLineRunner {
             log.info("send {} to topic :{}" ,value,topic);
         }
     }
+
+    /*public void sendCsvData(){
+        for (int i = 1; i < 4; i++){
+            String value = System.currentTimeMillis() + "," + getRandomValue() + "," + getRandomValue() + "," + getRandomValue();
+            KafkaProducerUtil.sendToKafka(topic,value);
+            log.info("send {} to topic :{}" ,value,topic);
+        }
+
+        while (true){
+            try {
+                Thread.sleep(1000);
+                String value = v + "";
+                KafkaProducerUtil.sendToKafka(topic, value);
+                v ++;
+                log.info("send {} to topic :{}" ,value,topic);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }*/
 
     /**
      * 项目启动自动 执行的方法
