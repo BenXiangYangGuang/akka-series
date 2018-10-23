@@ -44,7 +44,7 @@ public class NoRepeatKafkaCSVWidthToNarrowWindowProducer implements CommandLineR
      * @throws Exception
      */
     @Override
-    public void run(String... strings) throws Exception {
+    public void run(String... strings) {
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
