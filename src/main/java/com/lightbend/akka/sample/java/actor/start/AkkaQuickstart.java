@@ -11,7 +11,8 @@ import java.io.IOException;
 public class AkkaQuickstart {
     public static void main(String[] args) {
         final ActorSystem system = ActorSystem.create("helloakka");
-        
+
+        //Greeter 打招呼的人，侍者
         final ActorRef printerActor = system.actorOf(Printer.props(),"printerActor");
         final ActorRef howdyGreeter = system.actorOf(Greeter.props("Howdy",printerActor),"howdyGreeter");
         final ActorRef helloGreeter = system.actorOf(Greeter.props("Hello",printerActor),"helloGreeter");
@@ -19,7 +20,7 @@ public class AkkaQuickstart {
         
         //listener.tell(msg,sender);
         //接受者.tell(msg,发送者);
-        
+        //消息即发即弃，如果没有应答者，sender为null or ActorRef.noSender()
         howdyGreeter.tell(new WhoToGreet("Akka"),ActorRef.noSender());
         howdyGreeter.tell(new Greet(),ActorRef.noSender());
         
@@ -33,6 +34,8 @@ public class AkkaQuickstart {
         goodDayGreeter.tell(new Greet(),ActorRef.noSender());
         
         System.out.println(">>> Press ENTER to exit");
+
+        //消息是并行的，输出顺序不一致；
     
         try {
             System.in.read();

@@ -17,7 +17,7 @@ public class Hello3 {
         ActorRef bob = system.actorOf(Greeter.props("Bob", "Howya doing"));
         ActorRef alice = system.actorOf(Greeter.props("Alice", "Happy to meet you"));
         bob.tell(new Greet(alice), ActorRef.noSender());
-//        alice.tell(new Greet(bob), ActorRef.noSender());
+        alice.tell(new Greet(bob), ActorRef.noSender());
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) { /* ignore */ }
@@ -62,6 +62,7 @@ public class Hello3 {
                 ((Greet)message).target.tell(AskName, self());
                 
             } else if (message == AskName) {
+                //sender();获得最近的消息发送者；if 接受者.tell(message,null);再次利用sender(),方法去寻找sender时，会获得deadLetters；
                 sender().tell(new TellName(myName), self());
             } else if (message instanceof TellName) {
                 System.out.println(greeting + ", " + ((TellName)message).name);

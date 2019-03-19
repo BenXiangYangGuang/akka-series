@@ -88,7 +88,7 @@ public class MyAkkaClusterServer extends UntypedActor {
 
     public static void main(String [] args){
         System.out.println("Start MyAkkaClusterServer");
-        ActorSystem system = ActorSystem.create("akkaClusterTest", ConfigFactory.load("server.conf"));
+        ActorSystem system = ActorSystem.create("akkaClusterTest", ConfigFactory.load("reference.conf"));
         system.actorOf(Props.create(MyAkkaClusterServer.class), "myAkkaClusterServer");
         System.out.println("Started MyAkkaClusterServer");
 

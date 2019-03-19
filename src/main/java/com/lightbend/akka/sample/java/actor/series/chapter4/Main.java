@@ -16,6 +16,7 @@ public class Main {
         //参数1：系统名称。参数2：配置文件
         ActorSystem system = ActorSystem.create("Hello", ConfigFactory.load("akka.config"));
         ActorRef myWork = system.actorOf(Props.create(MyWork.class), "MyWork");
+        //在这里配置 被watchActor监控 mywork
         ActorRef watchActor = system.actorOf(Props.create(WatchActor.class, myWork), "WatchActor");
     
         myWork.tell(MyWork.Msg.WORKING, ActorRef.noSender());

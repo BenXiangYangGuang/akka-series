@@ -12,8 +12,8 @@ import com.typesafe.config.ConfigFactory;
 /**
  * @Author: fei2
  * @Date: 18-7-5 下午2:22
- * @Description:
- * @Refer To:
+ * @Description:https://blog.csdn.net/liubenlong007/article/details/54601998
+ * @Refer To: simpleClusterOne 项目和 simpleClusterTwo 构成了一个集群
  */
 public class SimpleClusterListener extends UntypedActor{
 
@@ -56,8 +56,8 @@ public class SimpleClusterListener extends UntypedActor{
         ActorSystem system = ActorSystem.create("akkaClusterTest", ConfigFactory.load("reference.conf"));
         system.actorOf(Props.create(SimpleClusterListener.class),"simpleClusterListener");
         System.out.println("Started simpleClusterListener");
-//        ActorRef greetActor = system.actorOf(Props.create(Test.GreetOne.class),"greetOne");
-//        greetActor.tell(new String(),ActorRef.noSender());
+        ActorRef greetActor = system.actorOf(Props.create(Test.GreetOne.class),"greetOne");
+        greetActor.tell(new String(),ActorRef.noSender());
 
     }
 }

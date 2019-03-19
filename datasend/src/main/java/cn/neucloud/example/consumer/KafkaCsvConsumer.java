@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import javax.security.auth.kerberos.KerberosKey;
 import java.util.Collections;
 
 /**
@@ -22,7 +23,7 @@ public class KafkaCsvConsumer implements CommandLineRunner{
     
     private KafkaConsumer<Integer,String> consumer;
 //    private static String topic = "topic_zYy5r8J0";
-    private static String topic = "Itdeer_Form_Data";
+    private static String topic = "csv_width_to_width";
     /**
      * 项目启动自动执行方法
      * @param strings
@@ -31,21 +32,28 @@ public class KafkaCsvConsumer implements CommandLineRunner{
     @Override
     public void run(String... strings) throws Exception {
 
-     /*   new Thread(){
+        new Thread(){
             @Override
             public void run() {
                 colletData();
             }
-        }.start();*/
+        }.start();
 
     }
+
+    public static void main(String[] args) {
+        KafkaCsvConsumer kafkaCsvConsumer = new KafkaCsvConsumer();
+        kafkaCsvConsumer.colletData();
+    }
+
     public void colletData(){
         consumer = KafkaConsumerUtil.getConsumer();
         consumer.subscribe(Collections.singletonList(topic));
         while (true) {
             ConsumerRecords<Integer, String> records = consumer.poll(10);
             for (ConsumerRecord<Integer, String> record : records) {
-                log.info("Received message: (" + record.key() + " : " + record.value() + ") at offset " + record.offset());
+                System.out.println("value:" + record.value());
+//                log.info("Received message: (" + record.key() + " : " + record.value() + ") at offset " + record.offset());
             }
         }
     }

@@ -52,6 +52,7 @@ public class MyAkkaClusterClient extends UntypedActor {
             /**注册服务提供者
              *
              */
+            //watch 操作用于注册这个getSender()(ActorRef)，作为一个监控器；当检测到服务器（getSender()）这个节点terminated;这个actor(本类actor)，将会收到一个terminated消息；
             getContext().watch(getSender());//这里对服务提供者进行watch
             backends.add(getSender());
 

@@ -18,7 +18,7 @@ import static akka.pattern.Patterns.ask;
  * @Author: fei2
  * @Date: 18-7-9 上午11:17
  * @Description: 发送 TransformationMessages 消息,服务器端收到消息,转化为大写,并返回大写消息
- * @Refer To:
+ * @Refer To: client-cluster 和 server-cluster 构成一个集群,
  */
 public class MyAkkaClusterClient extends UntypedActor {
 

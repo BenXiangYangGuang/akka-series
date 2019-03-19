@@ -17,9 +17,13 @@ import static com.wewe.TransformationMessages.BACKEND_REGISTRATION;
  * @Author: fei2
  * @Date: 18-7-9 上午11:17
  * @Description:
+ *
+ * 目前这个集群，服务器端和服务器端之间不能进行通信；客户端和客户端不能进行通信；客户端维持着自己所联系的所有服务器；
+ * 当有服务器上线时，服务器收到所有集群节点信息ClusterEvent.CurrentClusterState；找出其中的所有客户端；向客户端发送消息注册自己；
+ * 当客户端上线时，服务器端接受到ClusterEvent.MemberUp，向客户端发送消息，注册服务器到客户端
  * 服务发现与维护
  * 上面代码已经有注释了，有2点：
-    - 有新节点加入时，如果是客户端角色，则像客户端注册自己的信息。客户端收到消息以后会讲这个服务端存到本机服务列表中
+    - 有新节点加入时，如果是服务器端角色，则像客户端注册自己的信息。客户端收到消息以后会讲这个服务端存到本机服务列表中
     - 服务端当前节点在刚刚加入集群时，会收到CurrentClusterState消息，从中可以解析出集群中的所有前端节点（即roles为frontend的），并向其发送BACKEND_REGISTRATION消息，用于注册自己
  *
  * 1.新增客户端
@@ -44,6 +48,7 @@ public class MyAkkaClusterServer extends UntypedActor {
     @Override
     public void preStart() {
         // #subscribe
+        //服务端自己订阅了集群的成员上线消息；
         cluster.subscribe(getSelf(), ClusterEvent.MemberUp.class);
         // #subscribe
     }

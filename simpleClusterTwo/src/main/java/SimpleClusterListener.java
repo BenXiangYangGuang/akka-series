@@ -15,8 +15,8 @@ import com.typesafe.config.ConfigFactory;
 /**
  * @Author: fei2
  * @Date: 18-7-5 下午2:22
- * @Description:
- * @Refer To:
+ * @Description:https://blog.csdn.net/liubenlong007/article/details/54601998
+ * @Refer To: simpleClusterOne 项目和 simpleClusterTwo 项目构成了一个集群
  */
 public class SimpleClusterListener extends UntypedActor{
 
