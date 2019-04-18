@@ -12,6 +12,7 @@
         <module>server-cluster</module>
         <module>client-cluster</module>
         <module>alpakkaLearning</module>
+        <module>cluster</module>
         <module>datasend</module>
     </modules>
 
@@ -20,6 +21,16 @@
             <groupId>com.typesafe.akka</groupId>
             <artifactId>akka-actor_2.12</artifactId>
             <version>2.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-slf4j_2.12</artifactId>
+            <version>2.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe.akka</groupId>
@@ -44,7 +55,7 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -56,7 +67,7 @@
                         <argument>com.lightbend.akka.sample.AkkaQuickstart</argument>
                     </arguments>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 </project>

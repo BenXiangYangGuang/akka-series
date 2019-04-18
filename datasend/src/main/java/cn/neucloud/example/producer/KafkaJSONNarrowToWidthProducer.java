@@ -26,9 +26,10 @@ public class KafkaJSONNarrowToWidthProducer implements CommandLineRunner {
 
         for (int i = 1; i < 5; i++){
 
-            String value = "{\"t1\": "+date+",\"key\":\"col"+i+"\",\"value\": "+getRandomValue()+"}";
+            String value = "{\"t1\": "+date+",\"key\":\"col"+i+"\",\"value\": "+v+"}";
 
             KafkaProducerUtil.sendToKafka(topic,value);
+            v++;
             log.info("send {} to topic :{}" ,value,topic);
         }
 
